@@ -9,5 +9,12 @@
     <h1>Basic Pong Game</h1>
     <canvas id="pong" width="800" height="400"></canvas>
     <script src="game.js"></script>
+    <select id="difficulty" onchange="setDifficulty(this.value)">
+    <option value="1">Easy</option>
+    <option value="2" selected>Medium</option>
+    <option value="3">Hard</option>
+    <option value="4">Very Hard</option>
+    <option value="5">Insane</option>
+    </select>
 </body>
 </html>
