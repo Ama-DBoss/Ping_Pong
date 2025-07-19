@@ -150,6 +150,69 @@ function resetBall() {
     ballSpeedY = (Math.random() * 4 - 2);
 }
 
+// Add these variables at the top
+let gameEnded = false;
+let gameStartTime = null;
+
+// Add restart & quit button event listeners at the end of your file:
+document.getElementById('restartBtn').addEventListener('click', () => {
+    restartGame();
+});
+document.getElementById('quitBtn').addEventListener('click', () => {
+    quitGame();
+});
+
+// Restart game function
+function restartGame() {
+    leftScore = 0;
+    rightScore = 0;
+    leftPaddleY = (HEIGHT - PADDLE_HEIGHT) / 2;
+    rightPaddleY = (HEIGHT - PADDLE_HEIGHT) / 2;
+    gameStartTime = Date.now();
+    gameEnded = false;
+    resetBall();
+    gameLoop();
+}
+
+// Quit game function
+function quitGame() {
+    gameEnded = true;
+    setTimeout(() => {
+        alert("Game quit. Thanks for playing!");
+    }, 100);
+}
+
+// Update your gameLoop function:
+function gameLoop() {
+    if (!gameStartTime) gameStartTime = Date.now();
+
+    if (!gameEnded) {
+        update();
+        draw();
+
+        // Timeout check (if implemented)
+        if (Date.now() - gameStartTime >= GAME_TIMEOUT && leftScore < 11 && rightScore < 11) {
+            gameEnded = true;
+            setTimeout(() => {
+                alert("Time's up! No winner.");
+            }, 100);
+            return;
+        }
+
+        // End game if someone reaches 11
+        if (leftScore >= 11 || rightScore >= 11) {
+            gameEnded = true;
+            setTimeout(() => {
+                // Congratulatory message for winner
+                const winner = leftScore >= 11 ? "Left player" : "Right player";
+                alert(`Congratulations, ${winner} wins!`);
+            }, 100);
+            return;
+        }
+        requestAnimationFrame(gameLoop);
+    }
+}
+
 function gameLoop() {
     if (!gameStartTime) gameStartTime = Date.now();
 
