@@ -4,6 +4,27 @@ const ctx = canvas.getContext('2d');
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
 
+let gameStartTime = null;
+const GAME_TIMEOUT = 5 * 60 * 1000; // 5 minutes in ms
+let gameEnded = false;
+
+// Difficulty settings
+const difficulties = [
+    { ballSpeed: 4, aiSpeed: 3 },   // Easy
+    { ballSpeed: 5, aiSpeed: 4 },   // Medium
+    { ballSpeed: 6, aiSpeed: 5 },   // Hard
+    { ballSpeed: 7, aiSpeed: 6 },   // Very Hard
+    { ballSpeed: 8, aiSpeed: 7 }    // Insane
+];
+let selectedDifficulty = 2; // Default to Medium (1-5)
+
+function setDifficulty(level) {
+    selectedDifficulty = Math.max(1, Math.min(5, level));
+    // Set initial ball speed and AI paddle speed
+    ballSpeedX = difficulties[selectedDifficulty - 1].ballSpeed * (Math.random() < 0.5 ? 1 : -1);
+    ballSpeedY = (Math.random() * 4 - 2);
+}
+
 // Paddle properties
 const PADDLE_WIDTH = 12;
 const PADDLE_HEIGHT = 80;
@@ -118,21 +139,45 @@ function update() {
     // AI for right paddle (simple tracking)
     let targetY = ballY - PADDLE_HEIGHT / 2;
     let dy = targetY - rightPaddleY;
-    rightPaddleY += Math.sign(dy) * Math.min(Math.abs(dy), 4.5); // AI paddle speed
+    rightPaddleY += Math.sign(dy) * Math.min(Math.abs(dy), difficulties[selectedDifficulty - 1].aiSpeed);
     rightPaddleY = Math.max(0, Math.min(HEIGHT - PADDLE_HEIGHT, rightPaddleY));
 }
 
 function resetBall() {
     ballX = WIDTH / 2;
     ballY = HEIGHT / 2;
-    ballSpeedX = 5 * (Math.random() < 0.5 ? 1 : -1);
+    ballSpeedX = difficulties[selectedDifficulty - 1].ballSpeed * (Math.random() < 0.5 ? 1 : -1);
     ballSpeedY = (Math.random() * 4 - 2);
 }
 
 function gameLoop() {
-    update();
-    draw();
-    requestAnimationFrame(gameLoop);
+    if (!gameStartTime) gameStartTime = Date.now();
+
+    if (!gameEnded) {
+        update();
+        draw();
+
+        // Timeout check
+        if (Date.now() - gameStartTime >= GAME_TIMEOUT && leftScore < 11 && rightScore < 11) {
+            gameEnded = true;
+            setTimeout(() => {
+                alert("Time's up! No winner.");
+            }, 100);
+            return;
+        }
+
+        // End game if someone reaches 11
+        if (leftScore >= 11 || rightScore >= 11) {
+            gameEnded = true;
+            setTimeout(() => {
+                alert(leftScore >= 11 ? "Left player wins!" : "Right player wins!");
+            }, 100);
+            return;
+        }
+        requestAnimationFrame(gameLoop);
+    }
 }
+
+window.setDifficulty = setDifficulty;
 
 gameLoop();
