@@ -1,3 +1,7 @@
+// Add these variables at the top
+let gameEnded = false;
+let gameStartTime = null;
+
 const canvas = document.getElementById('pong');
 const ctx = canvas.getContext('2d');
 
@@ -150,19 +154,7 @@ function resetBall() {
     ballSpeedY = (Math.random() * 4 - 2);
 }
 
-// Add these variables at the top
-let gameEnded = false;
-let gameStartTime = null;
-
-// Add restart & quit button event listeners at the end of your file:
-document.getElementById('restartBtn').addEventListener('click', () => {
-    restartGame();
-});
-document.getElementById('quitBtn').addEventListener('click', () => {
-    quitGame();
-});
-
-// Restart game function
+/ Restart game function
 function restartGame() {
     leftScore = 0;
     rightScore = 0;
@@ -213,34 +205,14 @@ function gameLoop() {
     }
 }
 
-function gameLoop() {
-    if (!gameStartTime) gameStartTime = Date.now();
-
-    if (!gameEnded) {
-        update();
-        draw();
-
-        // Timeout check
-        if (Date.now() - gameStartTime >= GAME_TIMEOUT && leftScore < 11 && rightScore < 11) {
-            gameEnded = true;
-            setTimeout(() => {
-                alert("Time's up! No winner.");
-            }, 100);
-            return;
-        }
-
-        // End game if someone reaches 11
-        if (leftScore >= 11 || rightScore >= 11) {
-            gameEnded = true;
-            setTimeout(() => {
-                alert(leftScore >= 11 ? "Left player wins!" : "Right player wins!");
-            }, 100);
-            return;
-        }
-        requestAnimationFrame(gameLoop);
-    }
-}
-
 window.setDifficulty = setDifficulty;
 
 gameLoop();
+
+// Add restart & quit button event listeners at the end of your file:
+document.getElementById('restartBtn').addEventListener('click', () => {
+    restartGame();
+});
+document.getElementById('quitBtn').addEventListener('click', () => {
+    quitGame();
+});
