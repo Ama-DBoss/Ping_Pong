@@ -7,11 +7,6 @@
 </head>
 <body>
     <h1>Basic Pong Game</h1>
-    <canvas id="pong" width="800" height="400"></canvas>
-    <div>
-    <button id="restartBtn">Restart</button>
-    <button id="quitBtn">Quit</button>
-    </div>
     <script src="game.js"></script>
     <select id="difficulty" onchange="setDifficulty(this.value)">
     <option value="1">Easy</option>
@@ -20,5 +15,10 @@
     <option value="4">Very Hard</option>
     <option value="5">Insane</option>
     </select>
+    <canvas id="pong" width="800" height="400"></canvas>
+    <div>
+    <button id="restartBtn">Restart</button>
+    <button id="quitBtn">Quit</button>
+    </div>
 </body>
 </html>
